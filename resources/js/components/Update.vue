@@ -3,10 +3,10 @@
 
             
                 <div class="card card-default">
-                    <div class="card-header" style="text-align: center;"><h3>Create new post</h3></div>
+                    <div class="card-header" style="text-align: center;"><h3>Edit post</h3></div>
 
                     <div class="card-body">
-                        <form v-on:submit="submitPost()">
+                        <form v-on:submit="submitPostEdit()">
                         	<div class="form-group">
                         		<input type="text" v-model="posts.title" value="" placeholder="Title" class="form-control">
                         	</div>
@@ -15,7 +15,7 @@
                         	</div>
                         	<div class="form-group">
                         		<router-link to="/" class="btn btn-warning">Cancel</router-link>
-                        		<button type="" class="btn btn-success">Create</button>
+                        		<button type="" class="btn btn-success">Update</button>
                         	</div>
 
                         </form>
@@ -38,11 +38,24 @@ export default {
     }
   },
 
+   created() {
+  	let id = this.$route.params.id;
+    axios.get(`/posts/` + id + '/edit')
+    .then(response => {
+      // JSON responses are automatically parsed.
+      this.posts = response.data
+    })
+    .catch(e => {
+      this.errors.push(e)
+    })
+
+  },
+
   // Fetches posts when the component is created.
   methods:{
-
-  submitPost() {
-    axios.post(`/posts`, this.posts)
+  submitPostEdit() {
+  	let id = this.$route.params.id;
+    axios.patch(`/posts/` + id, this.posts)
     .then(response => {
       // JSON responses are automatically parsed.
       console.log(response)
